@@ -1,6 +1,6 @@
 package com.example.demo.Node3DB;
+import com.example.demo.Node3DB.node3;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-public interface Node3Repository extends JpaRepository<Node3, Long> {
+public interface Node3Repository extends JpaRepository<node3, Long> {
 }

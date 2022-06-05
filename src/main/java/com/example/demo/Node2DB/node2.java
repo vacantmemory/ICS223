@@ -1,10 +1,10 @@
-package com.example.demo.Node1DB;
+package com.example.demo.Node2DB;
 
 import javax.persistence.*;
 
 @Entity
 @Table
-public class Node1 {
+public class node2 {
     @Id
     @SequenceGenerator(
             name = "nodeId",
@@ -18,9 +18,9 @@ public class Node1 {
     private Long id;
     private String message;
 
-    public Node1() {}
+    public node2() {}
 
-    public Node1(Long id, String message) {
+    public node2(Long id, String message) {
         this.id = id;
         this.message = message;
     }
@@ -43,7 +43,7 @@ public class Node1 {
 
     @Override
     public String toString() {
-        return "Node1{" +
+        return "Node2{" +
                 "id=" + id +
                 ", message='" + message + '\'' +
                 '}';

@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.Properties;
 
 @Configuration
@@ -32,7 +34,7 @@ import java.util.Properties;
         transactionManagerRef = "node3TransactionManager",
         basePackages = {"com.example.demo.Node3DB"}
 )
-@PropertySource("application.properties")
+@PropertySource("classpath:application.properties")
 public class node3Config {
     @Value("${spring.third-datasource.url}")
     String Url;
@@ -42,9 +44,14 @@ public class node3Config {
 
     @Value("${spring.third-datasource.password}")
     String Password;
+//
+//    @Autowired
+//    private Environment env;
 
     @Bean
+    @ConfigurationProperties(prefix = "spring.third-datasource")
     public DataSource node3DataSource() {
+//        return DataSourceBuilder.create().build();
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(Url);
         config.setUsername(Username);
@@ -54,6 +61,38 @@ public class node3Config {
         config.addDataSourceProperty("idleTimeout", "60");
         return new HikariDataSource(config);
     }
+
+//    @Bean
+//    public LocalContainerEntityManagerFactoryBean node3EntityManager() {
+//        LocalContainerEntityManagerFactoryBean em
+//                = new LocalContainerEntityManagerFactoryBean();
+//        em.setDataSource(node3DataSource());
+//        em.setPackagesToScan(
+//                "com.example.demo.Node3DB");
+//
+//        HibernateJpaVendorAdapter vendorAdapter
+//                = new HibernateJpaVendorAdapter();
+//        em.setJpaVendorAdapter(vendorAdapter);
+//        HashMap<String, Object> properties = new HashMap<>();
+//        properties.put("hibernate.ddl-auto",
+//                env.getProperty("hibernate.ddl-auto"));
+//        properties.put("hibernate.dialect",
+//                env.getProperty("hibernate.dialect"));
+//        properties.put("show-sql",
+//                env.getProperty("show-sql"));
+//        properties.put("hibernate.format_sql",
+//                env.getProperty("hibernate.format_sql"));
+//        em.setJpaPropertyMap(properties);
+//
+//        return em;
+//    }
+//
+//    @Bean
+//    public PlatformTransactionManager node3TransactionManager() {
+//        JpaTransactionManager transactionManager = new JpaTransactionManager();
+//        transactionManager.setEntityManagerFactory(node3EntityManager().getObject());
+//        return transactionManager;
+//    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean node3EntityManagerFactory(@Autowired DataSource node3DataSource) {
@@ -65,9 +104,9 @@ public class node3Config {
         entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
 
         var props = new Properties();
-        props.setProperty("hibernate.ddl-auto", "create-drop");
+        props.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         props.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        props.setProperty("show_sql", "true");
+        props.setProperty("hibernate.show-sql", "true");
         props.setProperty("hibernate.format_sql", "true");
         entityManagerFactoryBean.setJpaProperties(props);
         return entityManagerFactoryBean;
