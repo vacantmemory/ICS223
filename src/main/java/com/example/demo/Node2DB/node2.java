@@ -3,7 +3,6 @@ package com.example.demo.Node2DB;
 import javax.persistence.*;
 
 @Entity
-@Table
 public class node2 {
     @Id
     @SequenceGenerator(

@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.Properties;
 
 @Configuration
@@ -42,13 +38,10 @@ public class node1Config {
     @Value("${spring.datasource.password}")
     String Password;
 
-//    @Autowired
-//    private Environment env;
-
-    @Bean
+    @Primary
+    @Bean(name = "node1DataSource")
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource node1DataSource() {
-//        return DataSourceBuilder.create().build();
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(Url);
         config.setUsername(Username);
@@ -56,40 +49,12 @@ public class node1Config {
         config.addDataSourceProperty("autoCommit", "true");
         config.addDataSourceProperty("connectionTimeout", "5");
         config.addDataSourceProperty("idleTimeout", "60");
-////        config.addDataSourceProperty("spring.jpa.hibernate.ddl-auto", "create-drop");
-////        config.addDataSourceProperty("spring.jpa.properties.hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-////        config.addDataSourceProperty("spring.jpa.show-sql", "true");
-////        config.addDataSourceProperty("spring.jpa.properties.hibernate.format_sql", "true");
         return new HikariDataSource(config);
     }
 
-//    @Bean
-//    public LocalContainerEntityManagerFactoryBean node1EntityManager() {
-//        LocalContainerEntityManagerFactoryBean em
-//                = new LocalContainerEntityManagerFactoryBean();
-//        em.setDataSource(node1DataSource());
-//        em.setPackagesToScan(
-//                "com.example.demo.Node1DB");
-//
-//        HibernateJpaVendorAdapter vendorAdapter
-//                = new HibernateJpaVendorAdapter();
-//        em.setJpaVendorAdapter(vendorAdapter);
-//        HashMap<String, Object> properties = new HashMap<>();
-//        properties.put("hibernate.ddl-auto",
-//                env.getProperty("hibernate.ddl-auto"));
-//        properties.put("hibernate.dialect",
-//                env.getProperty("hibernate.dialect"));
-//        properties.put("show-sql",
-//                env.getProperty("show-sql"));
-//        properties.put("hibernate.format_sql",
-//                env.getProperty("hibernate.format_sql"));
-//        em.setJpaPropertyMap(properties);
-//
-//        return em;
-//    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean node1EntityManagerFactory(@Autowired DataSource node1DataSource) {
+    @Primary
+    @Bean(name = "node1EntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean node1EntityManagerFactory(@Qualifier("node1DataSource") DataSource node1DataSource) {
         var entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactoryBean.setDataSource(node1DataSource);
         entityManagerFactoryBean.setPackagesToScan("com.example.demo.Node1DB");
@@ -106,17 +71,11 @@ public class node1Config {
         return entityManagerFactoryBean;
     }
 
-    @Bean
+    @Bean(name = "node1TransactionManager")
     public PlatformTransactionManager node1TransactionManager(
-            @Autowired EntityManagerFactory node1EntityManagerFactory) {
+            @Qualifier("node1EntityManagerFactory") EntityManagerFactory node1EntityManagerFactory) {
         return new JpaTransactionManager(node1EntityManagerFactory);
     }
 
-//    @Bean
-//    public PlatformTransactionManager node1TransactionManager() {
-//        JpaTransactionManager transactionManager = new JpaTransactionManager();
-//        transactionManager.setEntityManagerFactory(node1EntityManager().getObject());
-//        return transactionManager;
-//    }
 }
 

@@ -5,20 +5,15 @@ import javax.persistence.*;
 @Entity
 public class node1 {
     @Id
-    @SequenceGenerator(
-            name = "nodeId",
-            sequenceName = "nodeId",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "nodeId"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String message;
 
     public node1() {}
 
+    public node1(String message){
+        this.message = message;
+    }
     public node1(Long id, String message) {
         this.id = id;
         this.message = message;
