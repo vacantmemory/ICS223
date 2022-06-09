@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,9 +20,25 @@ public class Node3Service {
     @Autowired
     Node3Repository node3Repository;
 
+    String filename = "/Users/wangyangxu/IdeaProjects/223project/src/main/resources/log3.txt";
+
     //get latest message
     public Node3 getNode2LatestMessage(){
         Node3 n3 = node3Repository.findFirstByOrderByIdDesc();
+
+        if(n3.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename, true); //the true will append the new data
+                myWriter.write("READ "+n3.getId()+" "+n3.getMessage()+"\n");//appends the string to the file
+                myWriter.close();
+                System.out.println("Node3 accept READ request");
+            } catch (
+                    IOException e) {
+                System.out.println("Read Error occurred in Node3.");
+                e.printStackTrace();
+            }
+        }
+
         return n3;
     }
 
@@ -46,6 +64,20 @@ public class Node3Service {
             System.out.println(e);
             return new Node3(302L, "fails to add node3");
         }
+
+        if(node3.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("ADD "+node3.getId()+" "+node3.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node3 accept ADD request");
+            } catch (
+                    IOException e) {
+                System.out.println("ADD Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
         return new Node3(200L, "add node3 successfully, " + "its message: " + node3.getMessage());
     }
 
@@ -57,10 +89,24 @@ public class Node3Service {
 
         try {
             node3Repository.delete(n);
-            return new Node3(200L, "delete node3 successfully, " + "its id: " + n.getId());
         }catch (Exception e){
             return new Node3(303L, "fails to delete node3");
         }
+
+        if(n.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("DELETE "+id+" "+n.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node3 accept DELETE request");
+            } catch (
+                    IOException e) {
+                System.out.println("DELETE Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        return new Node3(200L, "delete node3 successfully, " + "its id: " + n.getId());
     }
 
     //check id

@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,9 +22,25 @@ public class Node2Service {
     @Autowired
     Node2Repository node2Repository;
 
+    String filename = "/Users/wangyangxu/IdeaProjects/223project/src/main/resources/log2.txt";
+
     //get latest message
     public Node2 getNode2LatestMessage(){
         Node2 n2 = node2Repository.findFirstByOrderByIdDesc();
+
+        if(n2.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename, true); //the true will append the new data
+                myWriter.write("READ "+n2.getId()+" "+n2.getMessage()+"\n");//appends the string to the file
+                myWriter.close();
+                System.out.println("Node2 accept READ request");
+            } catch (
+                    IOException e) {
+                System.out.println("Read Error occurred in Node2.");
+                e.printStackTrace();
+            }
+        }
+
         return n2;
     }
 
@@ -48,6 +66,19 @@ public class Node2Service {
             System.out.println(e);
             return new Node2(302L, "fails to add node2");
         }
+        if(node2.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("ADD "+node2.getId()+" "+node2.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node2 accept ADD request");
+            } catch (
+                    IOException e) {
+                System.out.println("ADD Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
         return new Node2(200L, "add node2 successfully, " + "its message: " + node2.getMessage());
     }
 
@@ -59,10 +90,24 @@ public class Node2Service {
 
         try {
             node2Repository.delete(n);
-            return new Node2(200L, "delete node2 successfully, " + "its id: " + n.getId());
         }catch (Exception e){
             return new Node2(303L, "fails to delete node2");
         }
+
+        if(n.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("DELETE "+id+" "+n.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node2 accept DELETE request");
+            } catch (
+                    IOException e) {
+                System.out.println("DELETE Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        return new Node2(200L, "delete node2 successfully, " + "its id: " + n.getId());
     }
 
     //check id

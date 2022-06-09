@@ -1,0 +1,5 @@
+ADD 1 hi
+ADD 2 hi
+ADD 3 hi
+DELETE 2 hi
+READ 3 hi

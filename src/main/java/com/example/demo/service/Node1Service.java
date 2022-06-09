@@ -3,13 +3,14 @@ package com.example.demo.service;
 import com.example.demo.Node1DB.Node1;
 import com.example.demo.Node1DB.Node1Repository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,9 +23,26 @@ public class Node1Service {
     @Autowired
     Node1Repository node1Repository;
 
+    String filename = "/Users/wangyangxu/IdeaProjects/223project/src/main/resources/log1.txt";
+
     //get latest message
     public Node1 getNode1LatestMessage(){
         Node1 n1 = node1Repository.findFirstByOrderByIdDesc();
+        if(n1 == null)
+            n1 = new Node1(300L,"Read Error, no data in node1");
+
+        if(n1.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename, true); //the true will append the new data
+                myWriter.write("READ "+n1.getId()+" "+n1.getMessage()+"\n");//appends the string to the file
+                myWriter.close();
+                System.out.println("Node1 accept READ request");
+            } catch (
+                    IOException e) {
+                System.out.println("Read Error occurred.");
+                e.printStackTrace();
+            }
+        }
         return n1;
     }
 
@@ -49,6 +67,19 @@ public class Node1Service {
         }catch (Exception e){
             return new Node1(302L, "fails to add node1");
         }
+
+        if(node1.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("ADD "+node1.getId()+" "+node1.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node1 accept ADD request");
+            } catch (IOException e) {
+                System.out.println("ADD Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
         return new Node1(200L, "add node1 successfully, " + "its message: " + node1.getMessage());
     }
 
@@ -60,10 +91,24 @@ public class Node1Service {
 
         try {
             em.remove(n);
-            return new Node1(200L, "delete node1 successfully, " + "its id: " + n.getId());
         }catch (Exception e){
             return new Node1(303L, "fails to delete node1");
         }
+
+        if(n.getId() < 300L){
+            try {
+                FileWriter myWriter = new FileWriter(filename,true);
+                myWriter.write("DELETE "+id+" "+n.getMessage()+"\n");
+                myWriter.close();
+                System.out.println("Node1 accept DELETE request");
+            } catch (
+                    IOException e) {
+                System.out.println("DELETE Error occurred.");
+                e.printStackTrace();
+            }
+        }
+
+        return new Node1(200L, "delete node1 successfully, " + "its id: " + n.getId());
     }
 
     //check id
