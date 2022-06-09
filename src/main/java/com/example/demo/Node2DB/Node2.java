@@ -1,25 +1,20 @@
-package com.example.demo.Node3DB;
+package com.example.demo.Node2DB;
 
 import javax.persistence.*;
 
 @Entity
-public class node3 {
+public class Node2 {
     @Id
-    @SequenceGenerator(
-            name = "nodeId",
-            sequenceName = "nodeId",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "nodeId"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String message;
 
-    public node3() {}
+    public Node2() {}
 
-    public node3(Long id, String message) {
+    public Node2(String message){
+        this.message = message;
+    }
+    public Node2(Long id, String message) {
         this.id = id;
         this.message = message;
     }
@@ -42,7 +37,7 @@ public class node3 {
 
     @Override
     public String toString() {
-        return "Node3{" +
+        return "Node2{" +
                 "id=" + id +
                 ", message='" + message + '\'' +
                 '}';

@@ -3,18 +3,18 @@ package com.example.demo.Node1DB;
 import javax.persistence.*;
 
 @Entity
-public class node1 {
+public class Node1 {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String message;
 
-    public node1() {}
+    public Node1() {}
 
-    public node1(String message){
+    public Node1(String message){
         this.message = message;
     }
-    public node1(Long id, String message) {
+    public Node1(Long id, String message) {
         this.id = id;
         this.message = message;
     }
