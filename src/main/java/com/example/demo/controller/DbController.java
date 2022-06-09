@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.Node2DB.Node2;
-import com.example.demo.Node2DB.Node2Repository;
 import com.example.demo.Node3DB.Node3;
-import com.example.demo.Node3DB.Node3Repository;
-import com.example.demo.Node1DB.Node1Repository;
 import com.example.demo.Node1DB.Node1;
 import com.example.demo.service.Node1Service;
 import com.example.demo.service.Node2Service;
@@ -28,26 +25,17 @@ public class DbController {
     @Autowired
     Node3Service node3Service;
 
-    @Autowired
-    Node1Repository node1Repository;
-
-    @Autowired
-    Node2Repository node2Repository;
-
-    @Autowired
-    Node3Repository node3Repository;
+    @RequestMapping(value = "/read")
+    public Node1 getLatestMessage(){
+        Node1 n1= node1Service.getNode1LatestMessage();
+        return n1;
+    }
 
 
     @RequestMapping(value = "/getnode1byid",params = {"id"})
-    public String getNode1ById(@RequestParam Long id){
-        List<Node1> list = node1Service.getNode1ById(id);
-        String s = "";
-        for(Node1 n: list){
-            s = s + n.getId().toString() + " " + n.getMessage() + "\n";
-        }
-        if(s.equals(""))
-            s = "node1 not found by message.";
-        return s;
+    public Node1 getNode1ById(@RequestParam Long id){
+        Node1 n1 = node1Service.getNode1ById(id);
+        return n1;
     }
 
     @RequestMapping(value = "/addnode1",params = {"message"})
@@ -61,15 +49,9 @@ public class DbController {
     }
 
     @RequestMapping(value = "/getnode2byid",params = {"id"})
-    public String getNode2ById(@RequestParam Long id){
-        List<Node2> list = node2Service.getNode2ById(id);
-        String s = "";
-        for(Node2 n: list){
-            s = s + n.getId().toString() + " " + n.getMessage() + "\n";
-        }
-        if(s.equals(""))
-            s = "node1 not found by message.";
-        return s;
+    public Node2 getNode2ById(@RequestParam Long id){
+        Node2 n2 = node2Service.getNode2ById(id);
+        return n2;
     }
 
     @RequestMapping(value = "/addnode2",params = {"message"})
@@ -83,15 +65,9 @@ public class DbController {
     }
 
     @RequestMapping(value = "/getnode3byid",params = {"id"})
-    public String getNode3ById(@RequestParam Long id){
-        List<Node3> list = node3Service.getNode3ById(id);
-        String s = "";
-        for(Node3 n: list){
-            s = s + n.getId().toString() + " " + n.getMessage() + "\n";
-        }
-        if(s.equals(""))
-            s = "node1 not found by message.";
-        return s;
+    public Node3 getNode3ById(@RequestParam Long id){
+        Node3 n3 = node3Service.getNode3ById(id);
+        return n3;
     }
 
     @RequestMapping(value = "/addnode3",params = {"message"})
@@ -113,19 +89,19 @@ public class DbController {
 
     @RequestMapping(value="/getallnode1", method= RequestMethod.GET)
     public List<Node1> getNode1DatabaseData() {
-        List<Node1> list = node1Repository.findAll();
+        List<Node1> list = node1Service.getNode1DatabaseData();
         return list;
     }
 
     @RequestMapping(value="/getallnode2", method=RequestMethod.GET)
     public List<Node2> getNode2DatabaseData() {
-        List<Node2> list = node2Repository.findAll();
+        List<Node2> list = node2Service.getNode2DatabaseData();
         return list;
     }
 
     @RequestMapping(value="/getallnode3", method=RequestMethod.GET)
     public List<Node3> getNode3DatabaseData() {
-        List<Node3> list = node3Repository.findAll();
+        List<Node3> list = node3Service.getNode3DatabaseData();
         return list;
     }
 }

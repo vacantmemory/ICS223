@@ -22,14 +22,24 @@ public class Node1Service {
     @Autowired
     Node1Repository node1Repository;
 
-    //query
-    public List<Node1> getNode1ById(Long id) {
-        List<Node1> list = node1Repository.findAllById(Collections.singleton(id));
-        if (list.isEmpty()) {
-            Node1 node1 = new Node1(301L, "node1 not found by id.");
-            list.add(node1);
-        }
+    //get latest message
+    public Node1 getNode1LatestMessage(){
+        Node1 n1 = node1Repository.findFirstByOrderByIdDesc();
+        return n1;
+    }
+
+    //query all data
+    public List<Node1> getNode1DatabaseData() {
+        List<Node1> list = node1Repository.findAll();
         return list;
+    }
+
+    //query
+    public Node1 getNode1ById(Long id) {
+        List<Node1> list = node1Repository.findAllById(Collections.singleton(id));
+        if (list.isEmpty())
+            return new Node1(301L, "node1 not found by id.");
+        return list.get(0);
     }
 
     //add

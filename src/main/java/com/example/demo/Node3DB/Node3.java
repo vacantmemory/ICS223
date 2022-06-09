@@ -14,6 +14,7 @@ public class Node3 {
     public Node3(String message){
         this.message = message;
     }
+
     public Node3(Long id, String message) {
         this.id = id;
         this.message = message;

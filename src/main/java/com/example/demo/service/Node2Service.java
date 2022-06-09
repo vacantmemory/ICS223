@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.Node1DB.Node1;
 import com.example.demo.Node2DB.Node2;
 import com.example.demo.Node2DB.Node2Repository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +20,24 @@ public class Node2Service {
     @Autowired
     Node2Repository node2Repository;
 
+    //get latest message
+    public Node2 getNode2LatestMessage(){
+        Node2 n2 = node2Repository.findFirstByOrderByIdDesc();
+        return n2;
+    }
+
+    //check all data
+    public List<Node2> getNode2DatabaseData() {
+        List<Node2> list = node2Repository.findAll();
+        return list;
+    }
 
     //query
-    public List<Node2> getNode2ById(Long id) {
+    public Node2 getNode2ById(Long id) {
         List<Node2> list = node2Repository.findAllById(Collections.singleton(id));
-        if (list.isEmpty()) {
-            Node2 Node2 = new Node2(301L, "node2 not found by id.");
-            list.add(Node2);
-        }
-
-        return list;
+        if (list.isEmpty())
+            return new Node2(301L, "node2 not found by id.");
+        return list.get(0);
     }
 
     //add
