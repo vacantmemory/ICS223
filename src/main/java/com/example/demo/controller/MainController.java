@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 @RestController
@@ -36,9 +37,12 @@ public class MainController {
         return n1;
     }
 
+    //check commit, if so, send replica log to node2 and node3
     @RequestMapping(value = "commit")
     public String node1Commit() {
             List<String> list = new ArrayList<>();
+            if(logLength(f1) > logLength(f2) || logLength(f1) > logLength(f3))
+                return "ABORT";
             try {
                 File log1 = new File(f1);
                 Scanner myReader = new Scanner(log1);
@@ -71,8 +75,21 @@ public class MainController {
             return "COMMIT";
     }
 
-    // /read -> most recent max_id + message
-    // /commit -> leader node local commit - > store key words (query/add/delete) in log
-    // -> node2+3 check log -> do ops according to the log
-    // /read_only -> r1
+    // return the length of log
+    public int logLength(String filename){
+        int i = 0;
+        try {
+            File log = new File(filename);
+            Scanner myReader = new Scanner(log);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                if(!data.startsWith("READ"))
+                    i++;
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
 }

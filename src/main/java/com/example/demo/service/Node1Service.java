@@ -128,7 +128,7 @@ public class Node1Service {
         return list.get(0);
     }
 
-    //check commit, if so, send replica log to node2 and node3
+
 
 
 }
