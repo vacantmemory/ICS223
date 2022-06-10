@@ -1,26 +1,20 @@
-package ICS223.demo.table;
+package ICS223.demo.database;
 
 import javax.persistence.*;
 
 @Entity
-@Table
-public class node3 {
+public class Node {
     @Id
-    @SequenceGenerator(
-        name = "nodeId",
-        sequenceName = "nodeId",
-        allocationSize = 1
-    )
-    @GeneratedValue(
-        strategy = GenerationType.SEQUENCE,
-        generator = "nodeId"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String message;
 
-    public node3() {}
+    public Node() {}
 
-    public node3(Long id, String message) {
+    public Node(String message){
+        this.message = message;
+    }
+    public Node(Long id, String message) {
         this.id = id;
         this.message = message;
     }
@@ -39,5 +33,13 @@ public class node3 {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "id=" + id +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
