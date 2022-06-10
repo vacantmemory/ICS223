@@ -9,10 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 
 @Service("Node1Service")
 @Transactional("node1TransactionManager")
@@ -124,6 +128,7 @@ public class Node1Service {
         return list.get(0);
     }
 
+    //check commit, if so, send replica log to node2 and node3
 
 
 }

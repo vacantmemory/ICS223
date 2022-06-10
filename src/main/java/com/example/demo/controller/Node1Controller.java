@@ -31,7 +31,6 @@ public class Node1Controller {
         return node1Service.deleteNode1ById(id);
     }
 
-
     @RequestMapping(value="/getallnode1", method= RequestMethod.GET)
     public List<Node1> getNode1DatabaseData() {
         List<Node1> list = node1Service.getNode1DatabaseData();

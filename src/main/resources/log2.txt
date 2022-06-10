@@ -1,4 +1,4 @@
 ADD 1 hi
 ADD 2 hi
 ADD 3 hi
-DELETE 1 hi
+DELETE 2 hi
